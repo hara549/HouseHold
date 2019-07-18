@@ -1,0 +1,76 @@
+/* 共通HEADER関連 */
+.include-header{
+  margin-bottom: 50px;
+}
+
+header{
+  text-align: center;
+}
+
+.CENTER{
+  text-align: center;
+}
+
+.header-title{
+  display: inline-block;
+  margin: 0px;
+  text-align: center;
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-size: 36px;
+  font: bold;
+  line-height: 60px;
+}
+
+/* ドロワー関連 */
+.drawer-nav {
+  background-color: #1a73e8;
+  z-index: 99;
+}
+
+.drawer-nav>ul>li {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  padding-left:20px;
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-size: 16px;
+  font: bold;
+}
+
+.drawer-nav>ul>li>a {
+  text-decoration: none;
+  color: white;
+}
+
+/* エラーメッセージ */
+.error {
+  color: rgba(251, 8, 8, 0.77);
+  font-weight: bold;
+  margin: 3px;
+}
+
+/* 共通style */
+.container {
+  margin: 0 auto;
+  width: 90%;
+}
+
+.title {
+  font-weight: normal;
+  font-size: 28px;
+}
+
+.button {
+  width: 300px;
+  height: 40px;
+  margin: 0px auto 5px auto;
+  background-color: #1a73e8;
+  font-size: 18px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.button:hover {
+  opacity: 0.7;
+}
