@@ -23,6 +23,23 @@ $histry_ary = null;
 $diff_money_0 = 0;
 $diff_money_1 = 0;
 
+//user_id取得
+$userid_ary = null;
+$get_userid_sql ="SELECT user_id FROM user_tbl WHERE room_id=?";
+$get_userid_ary = array($_SESSION["room_id"]);
+$res = QueryPreSqlFnc($get_userid_sql,$get_userid_ary);
+//取得値チェック
+if($res->get_err_flg() === 0){
+  $userid_ary = $res->get_result_ary();
+}else{
+  $error=$res->get_common_err();
+}
+//user_idを変数へ退避
+$user1 = $userid_ary[0]["user_id"];
+$user2 = $userid_ary[1]["user_id"];
+
+
+
 //ユーザー別の[合計金額][実施回数]を取得用SQL
 //（引数：　対象月開始日,対象月終了日,room_id[SESSION])
 // (返り値： ユーザーID,合計金額,実施回数)
@@ -50,10 +67,10 @@ $get_history_sql="SELECT A.history_id, C.nickname, B.category_name, B.money, A.i
                     WHERE B.room_id = ?
                     ORDER BY A.history_id";
 
-$get_money_ary = array('20190601','20190830','room_10');
+$get_money_ary = array('20000101','29991231',$_SESSION["room_id"]);
 
-$get_category_ary0 = array('10','room_10','20190601','20190830','room_10');
-$get_category_ary1 = array('11','room_10','20190601','20190830','room_10');
+$get_category_ary0 = array($user1,$_SESSION["room_id"],'20000101','29991231',$_SESSION["room_id"]);
+$get_category_ary1 = array($user2,$_SESSION["room_id"],'20000101','29991231',$_SESSION["room_id"]);
 
 $get_history_ary =array($_SESSION["room_id"]);
 
@@ -376,7 +393,7 @@ h2:after {
 
       $(".inquery-result-graph").slick({
           dots: true, //点の表示
-          autoplay: true, //自動切り替え
+          autoplay: false, //自動切り替え
           autoplaySpeed: 5000, //自動切り替えにかかる時間
           adaptiveHeight:true,
           slidesToShow:4,
@@ -386,7 +403,7 @@ h2:after {
   });
 
   function OnDELClick(history_id){
-    var room_id ="room_10";
+    var room_id = <?php echo json_encode($_SESSION["room_id"]); ?>;
 
     $.ajax({
       url:'model_inquery_delete.php',
