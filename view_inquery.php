@@ -279,18 +279,6 @@ h2:after {
   text-align: center;
 }
 
-.include-header{
-  background:#fff;
-  box-shadow:0 2px 8px rgba(30,30,80,.3);
-  left:0;
-  line-height:1;
-  position:fixed;
-  top:0;
-  width:100%;
-  z-index:24;
-  height: 60px;
-  opacity: 0.7;
-}
 </style>
 </head>
 

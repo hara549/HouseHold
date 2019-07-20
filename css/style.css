@@ -1,6 +1,5 @@
-/* 共通HEADER関連 */
-.include-header{
-  margin-bottom: 50px;
+body {
+  margin-top: 90px;
 }
 
 header{
@@ -54,6 +53,7 @@ header{
 .container {
   margin: 0 auto;
   width: 90%;
+  max-width: 1170px;
 }
 
 .title {
