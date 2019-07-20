@@ -210,6 +210,7 @@ h2:after {
 
 #detail-table{
   width: 100%;
+  text-align: center;
 }
 
 
@@ -316,17 +317,17 @@ h2:after {
             <th><i class="fas fa-female"></i><?php echo $histry_ary[1]["nickname"]?></th>
           </tr>
           <tr>
-            <th>実施回数</td>
+            <th>実施回数</th>
             <td><?php echo $histry_ary[0]["histry_count"]?></td>
             <td><?php echo $histry_ary[1]["histry_count"]?></td>
           </tr>
           <tr>
-            <th>合計金額</td>
+            <th>合計金額</th>
             <td>￥<?php echo $histry_ary[0]["money_sum"]?></td>
             <td>￥<?php echo $histry_ary[1]["money_sum"]?></td>
           </tr>
           <tr id="diff-tr">
-            <th>差分金額</td>
+            <th>差分金額</th>
             <td class="diff-money">￥<?php echo $diff_money_0?></td>
             <td class="diff-money">￥<?php echo $diff_money_1?></td>
           </tr>
