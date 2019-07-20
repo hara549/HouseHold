@@ -1,10 +1,11 @@
-<?php 
+<?php
+session_start();
 
 require_once('./inc/queryResult.php');
 require_once('./inc/lib.php');
 
 //テストデータ
-$_SESSION["room_id"]="room_1";
+// $_SESSION["room_id"]="room_10";
 
 $res = new QueryResult();
 $user_ary = null;
@@ -30,11 +31,11 @@ $get_money_sql ="SELECT C.nickname,SUM(B.money) money_sum,COUNT(history_id) hist
                   LEFT OUTER JOIN category_tbl B ON A.category_id = B.category_id
                   LEFT OUTER JOIN user_tbl C ON A.user_id = C.user_id
                   WHERE A.insert_date BETWEEN ? AND ?
-                  AND A.room_id = ? 
+                  AND A.room_id = ?
                   GROUP BY A.room_id,A.user_id";
 
 $get_category_sql="SELECT A.category_name,A.category_id,A.money, COUNT(history_id) count_id FROM category_tbl A
-                    LEFT OUTER JOIN 
+                    LEFT OUTER JOIN
                     (SELECT * FROM history_tbl
                     WHERE user_id=?
                     AND room_id=?
@@ -45,14 +46,14 @@ $get_category_sql="SELECT A.category_name,A.category_id,A.money, COUNT(history_i
 
 $get_history_sql="SELECT A.history_id, C.nickname, B.category_name, B.money, A.insert_date FROM history_tbl A
                     LEFT OUTER JOIN category_tbl B ON A.category_id =B.category_id
-                    LEFT OUTER JOIN user_tbl C ON A.user_id = c.user_id
+                    LEFT OUTER JOIN user_tbl C ON A.user_id = C.user_id
                     WHERE B.room_id = ?
                     ORDER BY A.history_id";
 
-$get_money_ary = array('20190601','20190830','room_1');
+$get_money_ary = array('20190601','20190830','room_10');
 
-$get_category_ary0 = array('1','room_1','20190601','20190830','room_1');
-$get_category_ary1 = array('10','room_1','20190601','20190830','room_1');
+$get_category_ary0 = array('10','room_10','20190601','20190830','room_10');
+$get_category_ary1 = array('11','room_10','20190601','20190830','room_10');
 
 $get_history_ary =array($_SESSION["room_id"]);
 
@@ -77,7 +78,7 @@ if($histry_ary[0]["money_sum"] != $histry_ary[1]["money_sum"]){
 }
 
 //合計金額の割合計算
-$parcent_0 = round(($histry_ary[0]["money_sum"] / ($histry_ary[0]["money_sum"] + $histry_ary[1]["money_sum"])) * 100); 
+$parcent_0 = round(($histry_ary[0]["money_sum"] / ($histry_ary[0]["money_sum"] + $histry_ary[1]["money_sum"])) * 100);
 $parcent_1 = 100 - $parcent_0;
 
 
@@ -283,89 +284,90 @@ h2:after {
 <?php include("./inc/header.php"); ?>
 
 <!-- Main部 (画面固有処理を移行に実装してください-->
-<!-- 家事結果集計グラフ（合計） -->
-<h2>家事結果集計グラフ（合計）</h2>
-<div class="inquery-result-graph-all">
-  <table id="chart-table">
-    <tr>
-      <td id="all-graph-td"><canvas id="chart-all"></canvas></td>
-      <td id="all-detail-td">
-        <table id="detail-table">
-        <tr>
-          <th></th>
-          <th><i class="fas fa-male"></i><?php echo $histry_ary[0]["nickname"]?></th>
-          <th><i class="fas fa-female"></i><?php echo $histry_ary[1]["nickname"]?></th>
-        </tr>
-        <tr>
-          <th>実施回数</td>
-          <td><?php echo $histry_ary[0]["histry_count"]?></td>
-          <td><?php echo $histry_ary[1]["histry_count"]?></td>
-        </tr>
-        <tr>
-          <th>合計金額</td>
-          <td>￥<?php echo $histry_ary[0]["money_sum"]?></td>
-          <td>￥<?php echo $histry_ary[1]["money_sum"]?></td>
-        </tr>
-        <tr id="diff-tr">
-          <th>差分金額</td>
-          <td class="diff-money">￥<?php echo $diff_money_0?></td>
-          <td class="diff-money">￥<?php echo $diff_money_1?></td>
-        </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-</div>
+<div class="container">
+  <!-- 家事結果集計グラフ（合計） -->
+  <h2>家事結果集計グラフ（合計）</h2>
+  <div class="inquery-result-graph-all">
+    <table id="chart-table">
+      <tr>
+        <td id="all-graph-td"><canvas id="chart-all"></canvas></td>
+        <td id="all-detail-td">
+          <table id="detail-table">
+          <tr>
+            <th></th>
+            <th><i class="fas fa-male"></i><?php echo $histry_ary[0]["nickname"]?></th>
+            <th><i class="fas fa-female"></i><?php echo $histry_ary[1]["nickname"]?></th>
+          </tr>
+          <tr>
+            <th>実施回数</td>
+            <td><?php echo $histry_ary[0]["histry_count"]?></td>
+            <td><?php echo $histry_ary[1]["histry_count"]?></td>
+          </tr>
+          <tr>
+            <th>合計金額</td>
+            <td>￥<?php echo $histry_ary[0]["money_sum"]?></td>
+            <td>￥<?php echo $histry_ary[1]["money_sum"]?></td>
+          </tr>
+          <tr id="diff-tr">
+            <th>差分金額</td>
+            <td class="diff-money">￥<?php echo $diff_money_0?></td>
+            <td class="diff-money">￥<?php echo $diff_money_1?></td>
+          </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </div>
 
 
-<!-- 家事結果集計グラフ（詳細） -->
-<h2>家事結果集計グラフ（詳細）</h2>
-<section class="inquery-result-graph slider">
-<?php 
-  foreach ($categry_ary0 as $key => $value) {
+  <!-- 家事結果集計グラフ（詳細） -->
+  <h2>家事結果集計グラフ（詳細）</h2>
+  <section class="inquery-result-graph slider">
+  <?php
+    foreach ($categry_ary0 as $key => $value) {
 
-    if($value["count_id"] == 0 && $categry_ary1[$key]["count_id"] == 0){
-      continue;
+      if($value["count_id"] == 0 && $categry_ary1[$key]["count_id"] == 0){
+        continue;
+      }
+
+      echo '<p class="graph-container">';
+      echo '<span class="graph-title">'.$value["category_name"].'</span>';
+      echo '<canvas id="chart-'.$key.'"></canvas>';
+      echo "</p>";
     }
+  ?>
+  </section>
 
-    echo '<p class="graph-container">';
-    echo '<span class="graph-title">'.$value["category_name"].'</span>';
-    echo '<canvas id="chart-'.$key.'"></canvas>';
-    echo "</p>";
-  }
-?>
-</section>
+  <!-- 家事実績照会部 -->
+  <h2>実績照会</h2>
+  <div id="inquery-history">
+    <table id="detail-table">
+      <tr>
+        <th>ユーザー名</th>
+        <th>カテゴリ</th>
+        <th>単金</th>
+        <th>登録日時</th>
+        <th></th>
+      </tr>
+  <?php
+    foreach($histry_all_ary as $key => $value){
+      echo '<tr>';
+      echo '<td class="CENTER">'.$value["nickname"].'</td>';
+      echo '<td class="CENTER">'.$value["category_name"].'</td>';
+      echo '<td class="CENTER">'.$value["money"].'</td>';
+      echo '<td class="CENTER">'.$value["insert_date"].'</td>';
+      echo '<td class="CENTER">';
+      echo '<a href="#" onclick="OnDELClick('.$value["history_id"].');" class="btn-flat-bottom-border">';
+      echo '<span>DELETE</span>';
+      echo '</a>';
+      echo '</td>';
+      echo '</tr>';
+    }
+  ?>
 
-<!-- 家事実績照会部 -->
-<h2>実績照会</h2>
-<div id="inquery-history">
-  <table id="detail-table">
-    <tr>
-      <th>ユーザー名</th>
-      <th>カテゴリ</th>
-      <th>単金</th>
-      <th>登録日時</th>
-      <th></th>
-    </tr>
-<?php
-  foreach($histry_all_ary as $key => $value){
-    echo '<tr>';
-    echo '<td class="CENTER">'.$value["nickname"].'</td>';
-    echo '<td class="CENTER">'.$value["category_name"].'</td>';
-    echo '<td class="CENTER">'.$value["money"].'</td>';
-    echo '<td class="CENTER">'.$value["insert_date"].'</td>';
-    echo '<td class="CENTER">';
-    echo '<a href="#" onclick="OnDELClick('.$value["history_id"].');" class="btn-flat-bottom-border">';
-    echo '<span>DELETE</span>';
-    echo '</a>';
-    echo '</td>';
-    echo '</tr>';
-  }
-?>
-
-  </table>
+    </table>
+  </div>
 </div>
-
 
 <script type="text/javascript">
     $(function(){
@@ -377,14 +379,14 @@ h2:after {
           autoplay: true, //自動切り替え
           autoplaySpeed: 5000, //自動切り替えにかかる時間
           adaptiveHeight:true,
-          slidesToShow:3,
+          slidesToShow:4,
           infinite: false,
           initialSlide:1,
       });
   });
 
   function OnDELClick(history_id){
-    var room_id ="room_1";
+    var room_id ="room_10";
 
     $.ajax({
       url:'model_inquery_delete.php',
@@ -405,7 +407,7 @@ h2:after {
     });
 
   }
-  //グラフの作成メソッド(Chart.js) 
+  //グラフの作成メソッド(Chart.js)
   function create_graph(id,data){
     var ctx = document.getElementById(id).getContext('2d');
     var myChart = new Chart(ctx, {
@@ -424,7 +426,7 @@ h2:after {
     });
   }
 
-<?php 
+<?php
 
   //処理概要：　カテゴリIDをキーとしてDBから取得した比較[ 元 ]と比較[ 対象 ]のデータをもとに
   //           グラフ作成に使用するスクリプトの生成を実施する
@@ -439,7 +441,7 @@ h2:after {
     if($count0_wk == 0 && $count1_wk == 0){
       continue;
     }
-    
+
     echo 'var data_'.$key.' = {';
     echo 'labels: ["'.$histry_ary[0]["nickname"].'", "'.$histry_ary[1]["nickname"].'"],';
     echo 'datasets: [{';
@@ -468,7 +470,7 @@ var data_2 = {
   };
 
   create_graph("chart-all",data_2)
- 
+
 </script>
 </body>
 </html>
